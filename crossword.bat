@@ -1,0 +1,1 @@
+start javaw -Xms512m -Xmx1024m -jar .\crossword-ui\dist\crossword-ui.jar
