@@ -46,10 +46,12 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
         progressBar = new javax.swing.JProgressBar();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        openCrosswordMenuItem = new javax.swing.JMenuItem();
         findDecisionMenuItem = new javax.swing.JMenuItem();
+        fileMenuSeparator0 = new javax.swing.JPopupMenu.Separator();
+        openCrosswordMenuItem = new javax.swing.JMenuItem();
         saveCrosswordMenuItem = new javax.swing.JMenuItem();
         saveCrosswordAsMenuItem = new javax.swing.JMenuItem();
+        fileMenuSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         dictionaryMenu = new javax.swing.JMenu();
         loadDictionaryMenuItem = new javax.swing.JMenuItem();
@@ -95,6 +97,18 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
         fileMenu.setMnemonic('f');
         fileMenu.setText("Кроссворд");
 
+        findDecisionMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        findDecisionMenuItem.setText("Найти решение");
+        findDecisionMenuItem.setEnabled(false);
+        findDecisionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findDecisionMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(findDecisionMenuItem);
+        fileMenu.add(fileMenuSeparator0);
+
+        openCrosswordMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         openCrosswordMenuItem.setMnemonic('o');
         openCrosswordMenuItem.setText("Открыть");
         openCrosswordMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -104,15 +118,7 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
         });
         fileMenu.add(openCrosswordMenuItem);
 
-        findDecisionMenuItem.setText("Найти решение");
-        findDecisionMenuItem.setEnabled(false);
-        findDecisionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                findDecisionMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(findDecisionMenuItem);
-
+        saveCrosswordMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         saveCrosswordMenuItem.setMnemonic('s');
         saveCrosswordMenuItem.setText("Сохранить");
         saveCrosswordMenuItem.setEnabled(false);
@@ -131,7 +137,9 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
             }
         });
         fileMenu.add(saveCrosswordAsMenuItem);
+        fileMenu.add(fileMenuSeparator1);
 
+        exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Выйти");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -145,6 +153,7 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 
         dictionaryMenu.setText("Словарь");
 
+        loadDictionaryMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
         loadDictionaryMenuItem.setText("Загрузить");
         loadDictionaryMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -427,6 +436,8 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenu dictionaryMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JPopupMenu.Separator fileMenuSeparator0;
+    private javax.swing.JPopupMenu.Separator fileMenuSeparator1;
     private javax.swing.JMenuItem findDecisionMenuItem;
     private javax.swing.JFileChooser loadDictFileChooser;
     private javax.swing.JMenuItem loadDictionaryMenuItem;
