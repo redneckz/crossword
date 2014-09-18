@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>Crossword</title>
+        <vendor>Alexander_Alexandrov</vendor>
+        <homepage href="https://github.com/redneckz/crossword"/>
+        <description>Training project.
+Crossword auto-generation based on specified dictionary (XDXF) and template.</description>
+        <description kind="short">Crossword</description>
+    <offline-allowed/>
+</information>
+    <update check="background"/>
+    <security>
+<all-permissions/>
+</security>
+    <resources>
+        <j2se java-vm-args="-Xms512m -Xmx1024m" version="1.7+"/>
+        <jar href="crossword-ui.jar" main="true"/>
+    <jar href="lib/functionaljava-3.1.jar"/>
+<jar href="lib/commons.jar"/>
+<jar href="lib/crossword.jar"/>
+</resources>
+    <application-desc main-class="com.epam.crossword.ui.desktop.MainFrame">
+    </application-desc>
+</jnlp>
