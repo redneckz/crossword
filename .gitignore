@@ -84,3 +84,5 @@ release.properties
 # Exceptions
 !/stuff
 !/stuff/**
+!/lib
+!/lib/**
