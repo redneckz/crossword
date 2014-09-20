@@ -73,6 +73,14 @@ build.xml
 master-application.jnlp
 preview-application.html
 
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
 # Exceptions
 !/stuff
 !/stuff/**

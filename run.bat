@@ -1,1 +1,1 @@
-java -Xms512m -Xmx1024m -jar "crossword-ui/dist/crossword-ui.jar"
+java -Xms512m -Xmx1024m -jar "./crossword-ui/target/crossword-ui-1.0-SNAPSHOT-jar-with-dependencies.jar"
