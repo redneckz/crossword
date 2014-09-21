@@ -33,12 +33,15 @@ public final class CrosswordParser implements InputStreamDecoder<Crossword> {
 			P2.<Integer, Integer>swap_().o(P2.<Character, P2<Integer, Integer>>__2()),
 			P.<Character, P2<Integer, Integer>>p2());
 	
-	private static InputStreamDecoder<Crossword> inst = new CrosswordParser();
-
-	public static InputStreamDecoder<Crossword> getInst() {
-		return inst;
+	private static class Holder {
+		
+		private static final InputStreamDecoder<Crossword> INST = new CrosswordParser();
 	}
 
+	public static InputStreamDecoder<Crossword> inst() {
+		return Holder.INST;
+	}
+	
 	private CrosswordParser() {
 	}
 	

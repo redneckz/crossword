@@ -3,7 +3,8 @@ package com.epam.crossword.ui.desktop;
 import com.epam.commons.process.ProcessMonitor;
 import com.epam.commons.process.ProcessMonitorAdapter;
 import com.epam.crossword.Decision;
-import com.epam.crossword.ui.CrosswordUIModel;
+import com.epam.crossword.ui.Controller;
+import com.epam.crossword.ui.ViewModel;
 import static java.awt.EventQueue.invokeLater;
 import java.io.File;
 import java.io.IOException;
@@ -20,14 +21,28 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class MainFrame extends javax.swing.JFrame implements Observer {
 	
-	private final CrosswordUIModel model = new CrosswordUIModel();
+	private final ViewModel model;
+	private final Controller controller;
 	
 	/**
 	 * Creates new form MainFrame
+	 * @param model
+	 * @param controller
 	 */
-	public MainFrame() {
-		initComponents();
+	public MainFrame(final ViewModel model, final Controller controller) {
+		this.model = model;
+		this.controller = controller;
+		init();
+	}
+	
+	private void init() {
 		model.addObserver(this);
+		initComponents();
+		this.setVisible(true);
+		controller.openDefaultCrossword();
+		final String errorText = "Ошибка загрузки стандартного словаря";
+		controller.loadDefaultDictionary(createLongProcessMonitor(errorText,
+				createDictionaryLoadingProcessMonitor(errorText, "dict.xdxf")));
 	}
 
 	/**
@@ -201,7 +216,7 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 			openCrosswordFileChooser.showOpenDialog(this);
 			File crosswordFile = openCrosswordFileChooser.getSelectedFile();
 			if (crosswordFile != null) {
-				model.openCrossword(crosswordFile);
+				controller.openCrossword(crosswordFile);
 				progressBar.setString("Кроссворд успешно загружен из файла \"" + crosswordFile.getName() + "\"");
 			}
 		} catch (IOException ex) {
@@ -216,53 +231,59 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 		final File dictFile = loadDictFileChooser.getSelectedFile();
 		if (dictFile != null) {
 			final String errorText = "Ошибка загрузки словаря \"" + dictFile.getName() + "\"";
-			model.loadDictionary(dictFile, createLongProcessMonitor(errorText, new ProcessMonitorAdapter<String>() {
-
-				private int itemCount = 0;
-				
-				@Override
-				public void onStart() {
-					progressBar.setValue(0);
-					progressBar.setString("Загрузка словаря \"" + dictFile.getName() + "\"...");
-				}
-				
-				@Override
-				public void onStep(String item) {
-					if (item != null) {
-						itemCount++;
-						progressBar.setValue((itemCount / 10) % 100);
-						progressBar.setString(itemCount + " слов загружено");
-					} else {
-						progressBar.setValue(100);
-						progressBar.setString("Индексация " + itemCount + " слов...");
-					}
-				}
-
-				@Override
-				public void onFail(Exception ex) {
-					progressBar.setValue(0);
-					progressBar.setString(errorText);
-				}
-
-				@Override
-				public void onEnd() {
-					progressBar.setValue(100);
-					progressBar.setString("Загрузка словаря \"" + dictFile.getName() + "\" завершена");
-				}
-			}));
+			controller.loadDictionary(dictFile, createLongProcessMonitor(errorText,
+					createDictionaryLoadingProcessMonitor(errorText, dictFile.getName())));
 		}
 	}//GEN-LAST:event_loadDictionaryMenuItemActionPerformed
 
+	private ProcessMonitor<String> createDictionaryLoadingProcessMonitor(final String errorText,
+			final String fileName) {
+		return new ProcessMonitorAdapter<String>() {
+
+			private int itemCount = 0;
+
+			@Override
+			public void onStart() {
+				progressBar.setValue(0);
+				progressBar.setString("Загрузка словаря \"" + fileName + "\"...");
+			}
+
+			@Override
+			public void onStep(String item) {
+				if (item != null) {
+					itemCount++;
+					progressBar.setValue((itemCount / 10) % 100);
+					progressBar.setString(itemCount + " слов загружено");
+				} else {
+					progressBar.setValue(100);
+					progressBar.setString("Индексация " + itemCount + " слов...");
+				}
+			}
+
+			@Override
+			public void onFail(Exception ex) {
+				progressBar.setValue(0);
+				progressBar.setString(errorText);
+			}
+
+			@Override
+			public void onEnd() {
+				progressBar.setValue(100);
+				progressBar.setString("Загрузка словаря \"" + fileName + "\" завершена");
+			}
+		};
+	}
+	
 	private void clearDictionaryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearDictionaryMenuItemActionPerformed
-		model.clearDictionary();
+		controller.clearDictionary();
 		progressBar.setString("Словарь пуст");
 	}//GEN-LAST:event_clearDictionaryMenuItemActionPerformed
 
 	private void saveCrosswordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveCrosswordMenuItemActionPerformed
 		try {
-			if (model.getCrosswordFile() != null) {
-				model.saveCrossword();
-				progressBar.setString("Кроссворд успешно сохранён в файл \"" + model.getCrosswordFile().getName() + "\"");
+			if (controller.getCrosswordFile() != null) {
+				controller.saveCrossword();
+				progressBar.setString("Кроссворд успешно сохранён в файл \"" + controller.getCrosswordFile().getName() + "\"");
 			}
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(MainFrame.this, "Ошибка сохранения кроссворда",
@@ -273,7 +294,7 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 
 	private void findDecisionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findDecisionMenuItemActionPerformed
 		final String errorText = "Ошибка поиска решения";
-		model.findDecision(createLongProcessMonitor(errorText, new ProcessMonitorAdapter<Decision>() {
+		controller.findDecision(createLongProcessMonitor(errorText, new ProcessMonitorAdapter<Decision>() {
 
 			@Override
 				public void onStart() {
@@ -307,7 +328,7 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 		File crosswordFile = saveCrosswordFileChooser.getSelectedFile();
 		try {
 			if (crosswordFile != null) {
-				model.saveCrosswordTo(crosswordFile);
+				controller.saveCrosswordTo(crosswordFile);
 				progressBar.setString("Кроссворд успешно сохранён в файл \"" + crosswordFile.getName() + "\"");
 			}
 		} catch (Exception ex) {
@@ -378,8 +399,8 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (model.getCrosswordFile() != null) {
-			this.setTitle("Кроссворд \"" + model.getCrosswordFile().getName() + "\"");
+		if (controller.getCrosswordFile() != null) {
+			this.setTitle("Кроссворд \"" + controller.getCrosswordFile().getName() + "\"");
 		} else {
 			this.setTitle("Кроссворд");
 		}
@@ -419,6 +440,9 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 		}
 		//</editor-fold>
 
+		final ViewModel model = new ViewModel();
+		final Controller controller = new Controller(model);
+		
 		/*
 		 * Create and display the form
 		 */
@@ -426,7 +450,7 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 
 			@Override
 			public void run() {
-				new MainFrame().setVisible(true);
+				final MainFrame mainFrame = new MainFrame(model, controller);
 			}
 		});
 	}

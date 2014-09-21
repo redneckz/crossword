@@ -23,10 +23,13 @@ import java.io.UnsupportedEncodingException;
  */
 public final class DecisionEncoder implements OutputStreamEncoder<Decision> {
 	
-	private static OutputStreamEncoder<Decision> inst = new DecisionEncoder();
+	private static class Holder {
+		
+		private static final OutputStreamEncoder<Decision> INST = new DecisionEncoder();
+	}
 
-	public static OutputStreamEncoder<Decision> getInst() {
-		return inst;
+	public static OutputStreamEncoder<Decision> inst() {
+		return Holder.INST;
 	}
 
 	private DecisionEncoder() {

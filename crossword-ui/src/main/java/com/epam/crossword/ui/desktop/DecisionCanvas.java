@@ -2,7 +2,7 @@ package com.epam.crossword.ui.desktop;
 
 import com.epam.crossword.Decision;
 import static com.epam.crossword.Decision.decisionChars_;
-import com.epam.crossword.ui.CrosswordUIModel;
+import com.epam.crossword.ui.ViewModel;
 import fj.Effect;
 import fj.P2;
 import static fj.function.Booleans.not;
@@ -18,13 +18,17 @@ import javax.swing.JPanel;
  *
  * @author Александр
  */
-public class DecisionCanvas extends JPanel implements Observer {
+class DecisionCanvas extends JPanel implements Observer {
 
-	private final CrosswordUIModel model;
+	private final ViewModel model;
 
-	DecisionCanvas(CrosswordUIModel model) {
+	DecisionCanvas(ViewModel model) {
 		this.model = model;
-		this.model.addObserver(this);
+		init();
+	}
+	
+	private void init() {
+		model.addObserver(this);
 	}
 
 	@Override
